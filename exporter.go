@@ -36,7 +36,7 @@ func (e *Exporter) ExportLua(xlsx *Xlsx) {
 		panic(err)
 	}
 
-	newFile, err := os.Create("test.lua")
+	newFile, err := os.Create("exports/test.lua")
 	defer newFile.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -50,7 +50,7 @@ func (e *Exporter) ExportLua(xlsx *Xlsx) {
 	l := lua.NewState()
 	lua.OpenLibraries(l)
 
-	err = lua.DoFile(l, "test.lua")
+	err = lua.DoFile(l, "exports/test.lua")
 	if err != nil {
 		panic(err)
 	}
@@ -63,7 +63,7 @@ func (e *Exporter) ExportJson(xlsx *Xlsx) {
 		panic(err)
 	}
 
-	newFile, err := os.Create("test.json")
+	newFile, err := os.Create("exports/test.json")
 	defer newFile.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -82,7 +82,7 @@ func (e Exporter) ExportCSharp(xlsx *Xlsx) {
 		panic(err)
 	}
 
-	newFile, err := os.Create("test.cs")
+	newFile, err := os.Create("exports/test.cs")
 	defer newFile.Close()
 	if err != nil {
 		log.Fatal(err)

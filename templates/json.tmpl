@@ -1,0 +1,127 @@
+{{- "["}}
+    {{- range $i, $value := .Data}}
+
+    {{- if eq $i 0 -}}{{- " " -}}
+    {{- else -}}{{- "," -}}
+    {{- end}}
+    { 
+        {{- range $i, $value := .Fields -}}
+
+        {{- if eq $i 0 -}}{{- " " -}}
+        {{- else -}}{{- "," -}}
+        {{- end -}}
+
+        {{- if eq .Type "dict"}}
+            {{- template "DictDictTmpl" .}}
+        {{- else if eq .Type "list"}}
+            {{- template "DictListTmpl" .}}
+        {{- else if eq .Type "string"}}
+            {{- template "DictStringTmpl" .}}
+        {{- else}} 
+            {{- template "DictNumberTmpl" .}} 
+        {{- end -}}
+        
+        {{- end}}
+    }
+    {{- end}}
+{{"]" -}}
+
+{{- define "DictDictTmpl"}} 
+{{indent .Level ""}}"{{.Name}}": { 
+    {{- range $i, $value := .Fields -}}
+
+    {{- if eq $i 0 -}}{{- " " -}}
+    {{- else -}}{{- "," -}}
+    {{- end -}}
+
+    {{- if eq .Type "dict"}} 
+        {{- template "DictDictTmpl" .}} 
+    {{- else if eq .Type "list"}} 
+        {{- template "DictListTmpl" .}} 
+    {{- else if eq .Type "string"}} 
+        {{- template "DictStringTmpl" .}} 
+    {{- else}} 
+        {{- template "DictNumberTmpl" .}} 
+    {{- end -}} 
+    {{- end}} 
+{{indent .Level "}"}}
+{{- end}}
+
+{{- define "ListDictTmpl"}} 
+{{indent .Level "{"}} 
+    {{- range $i, $value := .Fields -}}
+
+    {{- if eq $i 0 -}}{{- " " -}}
+    {{- else -}}{{- "," -}}
+    {{- end -}}
+
+    {{- if eq .Type "dict"}} 
+        {{- template "DictDictTmpl" .}}
+    {{- else if eq .Type "list"}} 
+        {{- template "DictListTmpl" .}} 
+    {{- else if eq .Type "string"}} 
+        {{- template "DictStringTmpl" .}} 
+    {{- else -}} 
+        {{- template "DictNumberTmpl" .}} 
+    {{- end -}} 
+    {{- end}} 
+{{indent .Level "}"}}
+{{- end}}
+
+{{- define "DictListTmpl"}}
+{{indent .Level ""}}"{{.Name}}": [
+    {{- range $i, $value := .Fields -}}
+
+    {{- if eq $i 0 -}}{{- " " -}}
+    {{- else -}}{{- "," -}}
+    {{- end -}}
+
+    {{- if eq .Type "dict"}}
+        {{- template "ListDictTmpl" .}} 
+    {{- else if eq .Type "list"}}
+        {{- template "ListListTmpl" .}} 
+    {{- else if eq .Type "string"}}
+        {{- template "ListStringTmpl" .}} 
+    {{- else -}}
+        {{- template "ListNumberTmpl" .}} 
+    {{- end -}} 
+    {{- end}}
+{{indent .Level "]"}}
+{{- end}}
+
+{{- define "ListListTmpl"}}
+{{indent .Level "["}} 
+    {{- range $i, $value := .Fields -}}
+
+    {{- if eq $i 0 -}}{{- " " -}}
+    {{- else -}}{{- "," -}}
+    {{- end -}}
+
+    {{- if eq .Type "dict"}}
+        {{- template "ListDictTmpl" .}} 
+    {{- else if eq .Type "list"}}
+        {{- template "ListListTmpl" .}} 
+    {{- else if eq .Type "string"}}
+        {{- template "ListStringTmpl" .}}
+    {{- else -}}
+        {{- template "ListNumberTmpl" .}} 
+    {{- end -}} 
+    {{- end}}
+{{indent .Level "]"}}
+{{- end}}
+
+{{- define "ListStringTmpl"}}
+{{indent .Level ""}}"{{.Data}}"
+{{- end}}
+
+{{- define "ListNumberTmpl"}}
+{{indent .Level .Data}}
+{{- end}}
+
+{{- define "DictStringTmpl"}}
+{{indent .Level ""}}"{{.Name}}": "{{.Data}}"
+{{- end}}
+
+{{- define "DictNumberTmpl"}}
+{{indent .Level ""}}"{{.Name}}": {{.Data}}
+{{- end}}

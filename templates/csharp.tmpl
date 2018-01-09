@@ -1,0 +1,9 @@
+using System;
+
+public class {{.Name}} {
+    {{- with .Template -}}
+    {{- range .Fields}}
+    public {{GetCSharpTypeName .LongType}} {{.Name}};
+    {{- end}}
+    {{- end}}
+{{"}" -}}

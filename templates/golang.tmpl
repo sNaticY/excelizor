@@ -1,0 +1,9 @@
+package main
+
+type {{.Name}} struct {
+    {{- with .Template -}}
+    {{- range .Fields}}
+	{{.Name}} {{GetGolangTypeName .LongType}} 
+    {{- end}}
+    {{- end}}
+{{"}" -}}

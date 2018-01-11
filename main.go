@@ -27,6 +27,7 @@ func main() {
 	exporter.ExportLua(x)
 	exporter.ExportJson(x)
 	exporter.ExportCSharp(x)
+	exporter.ExportGolang(x)
 
 	//x.Print()
 	// for _, row := range rows {

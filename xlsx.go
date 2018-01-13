@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"strconv"
 )
 
@@ -9,11 +10,13 @@ type Xlsx struct {
 	Name     string
 	Template *Field
 	Data     []*Field
+	keymap   map[int]*Field
 }
 
 func (x *Xlsx) Init(name string) {
 	x.Name = name
 	x.Data = make([]*Field, 0)
+	x.keymap = make(map[int]*Field)
 }
 
 func (x *Xlsx) Parse(rows [][]string) {
@@ -23,9 +26,15 @@ func (x *Xlsx) Parse(rows [][]string) {
 		for i := 3; i < len(rows); i++ {
 			field := x.Template.Copy()
 			id, _ := strconv.Atoi(rows[i][0])
-			field.ParseDatas(id, rows[i])
-			field.SetLevel(4)
-			x.Data = append(x.Data, field)
+			if _, ok2 := x.keymap[id]; !ok2 {
+				field.ParseDatas(id, rows[i])
+				field.SetLevel(4)
+				x.Data = append(x.Data, field)
+				x.keymap[id] = field
+			} else {
+				log.Fatalln("Parse", x.Name, "failed, Id", id, "is duplicated")
+			}
+
 		}
 	}
 }

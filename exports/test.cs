@@ -5,6 +5,7 @@ public class SimpleTypes {
     public int NumberTest;
     public string StringTest;
     public float FloatTest;
+    public bool BoolTest;
     public Dictionary<string, float> DictTest1;
     public Dictionary<string, float> DictTest2;
     public List<string> ListTest1;

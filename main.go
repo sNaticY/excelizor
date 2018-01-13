@@ -1,7 +1,10 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"snatic/excel2lua/exports"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 )
@@ -29,7 +32,21 @@ func main() {
 	exporter.ExportCSharp(x)
 	exporter.ExportGolang(x)
 
-	//x.Print()
+	jsonBytes, _ := ioutil.ReadFile("exports/test.json")
+
+	var obj []*exports.SimpleTypes
+
+	err = json.Unmarshal(jsonBytes, &obj)
+
+	if err != nil {
+		fmt.Println(err)
+	}
+	fmt.Printf("%+v\n", obj[2])
+	for s := range obj {
+		fmt.Printf("%v\n", s)
+	}
+
+	x.Print()
 	// for _, row := range rows {
 	// 	for _, colCell := range row {
 	// 		fmt.Print(colCell, "\t")

@@ -1,7 +1,9 @@
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 )
@@ -9,6 +11,7 @@ import (
 type Field struct {
 	Id          int
 	Name        string
+	FullName    string
 	Type        string
 	LongType    string
 	Data        string
@@ -28,6 +31,11 @@ func (f *Field) Init(name string, defination string) (bool, int) {
 
 	if name != "" {
 		f.Name = name
+		if f.ParentField == nil {
+			f.FullName = name
+		} else {
+			f.FullName = f.ParentField.FullName + "." + name
+		}
 	}
 	if defination != "" {
 		f.Size = 1
@@ -52,9 +60,9 @@ func (f *Field) ParseSubFieldsDefs(names []string, defs []string) {
 	for i := 0; i < len(names); {
 		if f.Template == nil {
 			f.Template = new(Field)
-			f.Template.ParentField = f
 			f.Template.Size = 1
 		}
+		f.Template.ParentField = f
 		field := f.Template.Copy()
 		subFieldName := names[i]
 		if f.Type == "list" {
@@ -75,12 +83,16 @@ func (f *Field) ParseSubFieldsDefs(names []string, defs []string) {
 	}
 }
 
-func (f *Field) ParseDatas(id int, datas []string) {
-	data := datas[0]
+func (f *Field) ParseDatas(id int, datas []string) error {
+	data := strings.TrimSpace(datas[0])
+	if strings.ToLower(data) == "nil" || strings.ToLower(data) == "null" {
+		return errors.New("this field is null")
+	}
 	f.Id = id
 	if f.ParentField != nil && f.ParentField.Type == "dict" && strings.TrimSpace(f.Name) == "" {
 		nameData := splitName(data)
 		f.Name = nameData[0]
+		f.FullName = f.ParentField.FullName + "." + f.Name
 		data = nameData[1]
 	}
 
@@ -89,16 +101,17 @@ func (f *Field) ParseDatas(id int, datas []string) {
 		subDatas := splitSubData(f.Layer, data)
 
 		f.setSubFieldsData(subDatas)
-		//fmt.Println(strconv.Itoa(f.Layer) + " \tname = " + f.Name + " \ttype = " + f.Type + " \tdata = " + f.Data + " \tcount = " + strconv.Itoa(f.Count))
 	} else if f.Count == 1 {
-
-		f.Data = data
-		f.Data = strings.Replace(f.Data, "\"", "\\\"", -1)
-		//fmt.Println(strconv.Itoa(f.Layer) + " \tname = " + f.Name + " \ttyoe = " + f.Type + " \tdata = " + f.Data + " \tcount = " + strconv.Itoa(f.Count))
+		if result, err := handleData(f.Type, data); err == nil {
+			f.Data = result
+			f.Data = strings.Replace(f.Data, "\"", "\\\"", -1)
+		} else {
+			log.Fatalln("[", err, "] in field", f.FullName, "of data id", f.Id)
+		}
 	} else {
 		f.setSubFieldsData(datas)
-		//fmt.Println(strconv.Itoa(f.Layer) + " \tname = " + f.Name + " \ttype = " + f.Type + " \tcount = " + strconv.Itoa(f.Count))
 	}
+	return nil
 }
 
 func (f *Field) setSubFieldsData(data []string) {
@@ -109,20 +122,27 @@ func (f *Field) setSubFieldsData(data []string) {
 	} else {
 		offset = 1
 	}
+
 	for i := offset; i < len(data); {
 		if len(f.Fields) <= fieldNum {
-			if data[i] == "" {
-				i++
-				continue
-			}
-			f.Fields = append(f.Fields, f.Template.Copy())
+			// if data[i] == "" {
+			// 	i++
+			// 	continue
+			// }
+			subField := f.Template.Copy()
+			subField.ParentField = f
+			f.Fields = append(f.Fields, subField)
 		}
 		size := f.Fields[fieldNum].Size
 		subdata := data[i : i+size]
 		if f.Type == "list" {
-			f.Fields[fieldNum].Name = strconv.Itoa(fieldNum + 1)
+			f.Fields[fieldNum].Name = strconv.Itoa(fieldNum)
+			f.Fields[fieldNum].FullName = f.FullName + "." + strconv.Itoa(fieldNum)
 		}
-		f.Fields[fieldNum].ParseDatas(f.Id, subdata)
+		if err := f.Fields[fieldNum].ParseDatas(f.Id, subdata); err != nil {
+			f.Fields = append(f.Fields[:fieldNum], f.Fields[fieldNum+1:]...)
+			fieldNum--
+		}
 		i += size
 		fieldNum++
 	}
@@ -206,10 +226,36 @@ func (f *Field) parseDefination(def string) (bool, string) {
 	return false, ""
 }
 
+func handleData(dataType string, data string) (string, error) {
+	var result string
+	var retErr error
+	switch dataType {
+	case "int":
+		ret, err := strconv.Atoi(data)
+		result = strconv.Itoa(ret)
+		retErr = err
+	case "float":
+		ret, err := strconv.ParseFloat(data, 32)
+		result = strconv.FormatFloat(ret, 'f', 3, 32)
+		retErr = err
+	case "bool":
+		ret, err := strconv.ParseBool(data)
+		result = strconv.FormatBool(ret)
+		retErr = err
+	case "string":
+		result = data
+		retErr = nil
+	default:
+		retErr = errors.New("DataType " + dataType + " is invalid for data " + data)
+	}
+	return result, retErr
+}
+
 func (f *Field) Copy() *Field {
 	field := new(Field)
 	field.Id = f.Id
 	field.Name = f.Name
+	field.FullName = f.FullName
 	field.Type = f.Type
 	field.LongType = f.LongType
 	field.Data = f.Data
@@ -241,9 +287,9 @@ func (f *Field) SetLevel(level int) {
 
 func (f *Field) Print() {
 	for i := 0; i < f.Level; i++ {
-		fmt.Print("\t")
+		fmt.Print(" ")
 	}
-	fmt.Print(" name = ", f.Name, " | type = ", f.Type, " | long type = ", f.LongType)
+	fmt.Print(" name = ", f.FullName, " | type = ", f.Type, " | long type = ", f.LongType)
 	if f.Data != "" {
 		fmt.Print(" | data = ", f.Data)
 	}

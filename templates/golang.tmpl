@@ -1,9 +1,9 @@
-package main
+package exports
 
 type {{.Name}} struct {
     {{- with .Template -}}
     {{- range .Fields}}
-	{{.Name}} {{GetGolangTypeName .LongType}} 
+	{{.Name}} {{GetGolangTypeName .LongType}} `json:"{{.Name}}"`
     {{- end}}
     {{- end}}
 {{"}" -}}

@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 	lua "github.com/Shopify/go-lua"
@@ -111,21 +110,6 @@ func exportFile(x *Xlsx) {
 		exporter.ExportGolang(params.golangPath, x)
 
 	}
-}
-
-func name2lower2Camel(name string) (string, string) {
-	dotIndex := strings.LastIndex(name, ".")
-	lower := name[:dotIndex]
-
-	initial := strings.ToUpper(lower[0:1])
-	other := lower[1:]
-	for strings.Index(other, "_") != -1 {
-		index := strings.Index(other, "_")
-		replace := strings.ToUpper(other[index+1 : index+2])
-		s := []string{other[:index], replace, other[index+2:]}
-		other = strings.Join(s, "")
-	}
-	return lower, initial + other
 }
 
 func testJson() {

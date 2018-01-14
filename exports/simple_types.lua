@@ -37,23 +37,23 @@ local SimpleTypes = {
         }, 
         DictTest4 = { 
             SubDict1 = {
-                item1 = "seges",
-                item2 = "fesgs",
-                item3 = "fesge", 
+                Item1 = "seges",
+                Item2 = "fesgs",
+                Item3 = "fesge", 
             }, 
             SubDict2 = {
-                item1 = "123",
-                item2 = "121", 
+                Item1 = "123",
+                Item2 = "121", 
             }, 
         }, 
         DictTest5 = { 
             Subdict1 = {
-                item1 = "asd",
-                item2 = "sdf", 
+                Item1 = "asd",
+                Item2 = "sdf", 
             }, 
             Subdict2 = {
-                item1 = "qwe",
-                item2 = "wer", 
+                Item1 = "qwe",
+                Item2 = "wer", 
             }, 
         },
         ListTest3 = {
@@ -89,22 +89,22 @@ local SimpleTypes = {
             },
         }, 
         DictTest6 = {
-            sublist1 = {
+            Sublist1 = {
                 [0] = "dictTest6[\"sublist1\"][0]",
                 [1] = "dictTest6[\"sublist1\"][1]",
             },
-            sublist2 = {
+            Sublist2 = {
                 [0] = "dictTest6[\"sublist2\"][0]",
                 [1] = "dictTest6[\"sublist2\"][1]",
             }, 
         }, 
         DictTest7 = {
-            sublist1 = {
+            Sublist1 = {
                 [0] = "zxc",
                 [1] = "xcv",
                 [2] = "cvb",
             },
-            sublist2 = {
+            Sublist2 = {
                 [0] = "vbn",
                 [1] = "bnm",
                 [2] = "mnb",
@@ -112,22 +112,22 @@ local SimpleTypes = {
         },
         ListTest6 = { 
             [0] = {
-                item1 = "fse",
-                item2 = "fsd", 
+                Item1 = "fse",
+                Item2 = "fsd", 
             }, 
             [1] = {
-                item1 = "tyu",
-                item2 = "poi", 
+                Item1 = "tyu",
+                Item2 = "poi", 
             },
         },
         ListTest7 = { 
             [0] = {
-                item0_1 = "fse",
-                item0_2 = "fsd", 
+                Item0_1 = "fse",
+                Item0_2 = "fsd", 
             }, 
             [1] = {
-                item1_1 = "qwe",
-                item1_2 = "qse", 
+                Item1_1 = "qwe",
+                Item1_2 = "qse", 
             },
         },
     },
@@ -169,23 +169,23 @@ local SimpleTypes = {
         }, 
         DictTest4 = { 
             SubDict1 = {
-                item1 = "seges",
-                item2 = "fesgs",
-                item3 = "fesge", 
+                Item1 = "seges",
+                Item2 = "fesgs",
+                Item3 = "fesge", 
             }, 
             SubDict2 = {
-                item1 = "123",
-                item2 = "121", 
+                Item1 = "123",
+                Item2 = "121", 
             }, 
         }, 
         DictTest5 = { 
             Subdict1 = {
-                item1 = "asd",
-                item2 = "sdf", 
+                Item1 = "asd",
+                Item2 = "sdf", 
             }, 
             Subdict2 = {
-                item1 = "qwe",
-                item2 = "wer", 
+                Item1 = "qwe",
+                Item2 = "wer", 
             }, 
         },
         ListTest3 = {
@@ -221,22 +221,22 @@ local SimpleTypes = {
             },
         }, 
         DictTest6 = {
-            sublist1 = {
+            Sublist1 = {
                 [0] = "dictTest6[\"sublist1\"][0]",
                 [1] = "dictTest6[\"sublist1\"][1]",
             },
-            sublist2 = {
+            Sublist2 = {
                 [0] = "dictTest6[\"sublist2\"][0]",
                 [1] = "dictTest6[\"sublist2\"][1]",
             }, 
         }, 
         DictTest7 = {
-            sublist1 = {
+            Sublist1 = {
                 [0] = "zxc",
                 [1] = "xcv",
                 [2] = "cvb",
             },
-            sublist2 = {
+            Sublist2 = {
                 [0] = "vbn",
                 [1] = "bnm",
                 [2] = "mnb",
@@ -244,22 +244,22 @@ local SimpleTypes = {
         },
         ListTest6 = { 
             [0] = {
-                item1 = "fse",
-                item2 = "fsd", 
+                Item1 = "fse",
+                Item2 = "fsd", 
             }, 
             [1] = {
-                item1 = "tyu",
-                item2 = "poi", 
+                Item1 = "tyu",
+                Item2 = "poi", 
             },
         },
         ListTest7 = { 
             [0] = {
-                item0_1 = "fse",
-                item0_2 = "fsd", 
+                Item0_1 = "fse",
+                Item0_2 = "fsd", 
             }, 
             [1] = {
-                item1_1 = "qwe",
-                item1_2 = "qse", 
+                Item1_1 = "qwe",
+                Item1_2 = "qse", 
             },
         },
     },
@@ -297,23 +297,23 @@ local SimpleTypes = {
         }, 
         DictTest4 = { 
             SubDict1 = {
-                item1 = "seges",
-                item2 = "fesgs",
-                item3 = "fesge", 
+                Item1 = "seges",
+                Item2 = "fesgs",
+                Item3 = "fesge", 
             }, 
             SubDict2 = {
-                item1 = "123",
-                item2 = "121", 
+                Item1 = "123",
+                Item2 = "121", 
             }, 
         }, 
         DictTest5 = { 
             Subdict1 = {
-                item1 = "asd",
-                item2 = "sdf", 
+                Item1 = "asd",
+                Item2 = "sdf", 
             }, 
             Subdict2 = {
-                item1 = "qwe",
-                item2 = "wer", 
+                Item1 = "qwe",
+                Item2 = "wer", 
             }, 
         },
         ListTest3 = {
@@ -349,22 +349,22 @@ local SimpleTypes = {
             },
         }, 
         DictTest6 = {
-            sublist1 = {
+            Sublist1 = {
                 [0] = "dictTest6[\"sublist1\"][0]",
                 [1] = "dictTest6[\"sublist1\"][1]",
             },
-            sublist2 = {
+            Sublist2 = {
                 [0] = "dictTest6[\"sublist2\"][0]",
                 [1] = "dictTest6[\"sublist2\"][1]",
             }, 
         }, 
         DictTest7 = {
-            sublist1 = {
+            Sublist1 = {
                 [0] = "zxc",
                 [1] = "xcv",
                 [2] = "cvb",
             },
-            sublist2 = {
+            Sublist2 = {
                 [0] = "vbn",
                 [1] = "bnm",
                 [2] = "mnb",
@@ -372,22 +372,22 @@ local SimpleTypes = {
         },
         ListTest6 = { 
             [0] = {
-                item1 = "fse",
-                item2 = "fsd", 
+                Item1 = "fse",
+                Item2 = "fsd", 
             }, 
             [1] = {
-                item1 = "tyu",
-                item2 = "poi", 
+                Item1 = "tyu",
+                Item2 = "poi", 
             },
         },
         ListTest7 = { 
             [0] = {
-                item0_1 = "fse",
-                item0_2 = "fsd", 
+                Item0_1 = "fse",
+                Item0_2 = "fsd", 
             }, 
             [1] = {
-                item1_1 = "qwe",
-                item1_2 = "qse", 
+                Item1_1 = "qwe",
+                Item1_2 = "qse", 
             },
         },
     },

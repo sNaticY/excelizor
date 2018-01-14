@@ -30,7 +30,7 @@ func (f *Field) Init(name string, defination string) (bool, int) {
 	}
 
 	if name != "" {
-		f.Name = name
+		f.Name = upperInitialChar(name)
 		if f.ParentField == nil {
 			f.FullName = name
 		} else {
@@ -94,7 +94,7 @@ func (f *Field) ParseDatas(id int, datas []string) error {
 	f.Id = id
 	if f.ParentField != nil && f.ParentField.Type == "dict" && strings.TrimSpace(f.Name) == "" {
 		nameData := splitName(data)
-		f.Name = nameData[0]
+		f.Name = upperInitialChar(nameData[0])
 		f.FullName = f.ParentField.FullName + "." + f.Name
 		data = nameData[1]
 	}
@@ -151,59 +151,6 @@ func (f *Field) setSubFieldsData(data []string) {
 	}
 }
 
-func trimData(data string) string {
-	before := data
-	for {
-		data = strings.TrimPrefix(data, "{")
-		data = strings.TrimSuffix(data, "}")
-		if before == data {
-			return data
-		}
-		before = data
-	}
-
-}
-
-func splitName(data string) []string {
-	subDatas := make([]string, 0)
-	equal := strings.Index(data, "=")
-
-	var n string
-	var d string
-	if equal == -1 {
-		d = data
-	} else {
-		n = data[:equal]
-		d = data[equal+1:]
-	}
-	subDatas = append(subDatas, n)
-	subDatas = append(subDatas, d)
-	return subDatas
-}
-
-func splitSubData(layer int, data string) []string {
-	sept := ""
-	for i := 1; i < layer; i++ {
-		sept += "}"
-	}
-	sept += "|"
-
-	subDatas := make([]string, 0)
-
-	for {
-		pos := strings.Index(data, sept)
-		if pos == -1 {
-			subDatas = append(subDatas, data)
-			break
-		} else {
-			subData := data[0 : pos+layer-1]
-			data = data[pos+layer:]
-			subDatas = append(subDatas, subData)
-		}
-	}
-	return subDatas
-}
-
 func (f *Field) parseDefination(def string) (bool, string) {
 	first := strings.Index(def, "<")
 	last := strings.LastIndex(def, ">:")
@@ -227,31 +174,6 @@ func (f *Field) parseDefination(def string) (bool, string) {
 	}
 
 	return false, ""
-}
-
-func handleData(dataType string, data string) (string, error) {
-	var result string
-	var retErr error
-	switch dataType {
-	case "int":
-		ret, err := strconv.Atoi(data)
-		result = strconv.Itoa(ret)
-		retErr = err
-	case "float":
-		ret, err := strconv.ParseFloat(data, 32)
-		result = strconv.FormatFloat(ret, 'f', 3, 32)
-		retErr = err
-	case "bool":
-		ret, err := strconv.ParseBool(data)
-		result = strconv.FormatBool(ret)
-		retErr = err
-	case "string":
-		result = data
-		retErr = nil
-	default:
-		retErr = errors.New("DataType " + dataType + " is invalid for data " + data)
-	}
-	return result, retErr
 }
 
 func (f *Field) Copy() *Field {

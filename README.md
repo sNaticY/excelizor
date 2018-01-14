@@ -1,5 +1,11 @@
 # excelizor
+
 A simple tool that can be used to export .xlsx files to lua-table, json and their corresponding csharp classes and golang structs
+
+[![Travis](https://travis-ci.org/sNaticY/excelizor.svg?branch=master)](https://travis-ci.org/sNaticY/excelizor) 
+[![Go Report Card](https://goreportcard.com/badge/github.com/sNaticY/excelizor)](https://goreportcard.com/report/github.com/sNaticY/excelizor) 
+[![GitHub release](https://img.shields.io/github/release/sNaticY/excelizor.svg)](https://github.com/sNaticY/excelizor/releases)
+[![license](https://img.shields.io/github/license/sNaticY/excelizor.svg)](https://github.com/sNaticY/excelizor/blob/master/LICENSE)
 
 ## Installation
 

@@ -4,7 +4,16 @@ local VerticalTypes = {
         NumberTest = 345,
         StringTest = "This is a string",
         FloatTest = 2.600,
-        BoolTest = true,
+        BoolTest1 = true,
+        BoolTest2 = false,
+        BoolTest3 = true,
+        BoolTest4 = false,
+        BoolTest5 = true,
+        BoolTest6 = false,
+        BoolTest7 = true,
+        BoolTest8 = false,
+        BoolTest9 = true,
+        BoolTest10 = false,
     },
 }
 

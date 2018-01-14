@@ -30,7 +30,7 @@ func (x *Xlsx) Parse(rows [][]string) {
 			field := x.Template.Copy()
 
 			// comment row
-			if strings.HasPrefix(rows[i][0], "//") {
+			if strings.HasPrefix(rows[i][0], "//") || rows[i][0] == "" {
 				continue
 			}
 			id, _ := strconv.Atoi(rows[i][0])

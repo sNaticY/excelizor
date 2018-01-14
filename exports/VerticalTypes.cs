@@ -8,6 +8,15 @@ namespace Configs
         public int NumberTest;
         public string StringTest;
         public float FloatTest;
-        public bool BoolTest;
+        public bool BoolTest1;
+        public bool BoolTest2;
+        public bool BoolTest3;
+        public bool BoolTest4;
+        public bool BoolTest5;
+        public bool BoolTest6;
+        public bool BoolTest7;
+        public bool BoolTest8;
+        public bool BoolTest9;
+        public bool BoolTest10;
     }
 }

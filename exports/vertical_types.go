@@ -1,5 +1,6 @@
 package exports
 
+// VerticalTypes exported from vertical_types.xlsx
 type VerticalTypes struct {
 	Id         int32   `json:"Id"`
 	NumberTest int32   `json:"NumberTest"`

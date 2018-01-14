@@ -1,5 +1,6 @@
 package exports
 
+// MultiNestedTypes exported from multi_nested_types.xlsx
 type MultiNestedTypes struct {
 	Id        int32                         `json:"Id"`
 	DictTest3 map[string]map[string]int32   `json:"DictTest3"`

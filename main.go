@@ -23,7 +23,7 @@ var params *parameters
 
 type fileXlsx struct {
 	file *excelize.File
-	xlsx *Xlsx
+	xl   *xlsx
 }
 
 var loadedFiles map[string]*fileXlsx
@@ -67,8 +67,8 @@ func main() {
 		for i := 0; i < 60-len(output); i++ {
 			fmt.Print(".")
 		}
-		value.xlsx = parseFile(key, value.file)
-		exportFile(value.xlsx)
+		value.xl = parseFile(key, value.file)
+		exportFile(value.xl)
 		fmt.Print(" Success!\n")
 	}
 
@@ -83,17 +83,17 @@ func loadFile(path string, f os.FileInfo, err error) error {
 	if f.IsDir() {
 		return nil
 	}
-	xlsx, err := excelize.OpenFile(path)
+	xl, err := excelize.OpenFile(path)
 	if err != nil {
 		return nil
 	}
 
-	loadedFiles[f.Name()] = &fileXlsx{xlsx, nil}
+	loadedFiles[f.Name()] = &fileXlsx{xl, nil}
 
 	return err
 }
 
-func parseFile(fileName string, file *excelize.File) *Xlsx {
+func parseFile(fileName string, file *excelize.File) *xlsx {
 	var data [][]string
 	sheetName := file.GetSheetName(1)
 
@@ -102,7 +102,7 @@ func parseFile(fileName string, file *excelize.File) *Xlsx {
 	} else {
 		data = file.GetRows(sheetName)
 	}
-	x := new(Xlsx)
+	x := new(xlsx)
 
 	lower, camel := name2lower2Camel(fileName)
 	x.Init(lower, camel)
@@ -110,29 +110,29 @@ func parseFile(fileName string, file *excelize.File) *Xlsx {
 	return x
 }
 
-func exportFile(x *Xlsx) {
-	exporter := new(Exporter)
-	exporter.Init()
+func exportFile(x *xlsx) {
+	e := new(exporter)
+	e.Init()
 
 	if params.luaPath != "" {
-		exporter.ExportLua(params.luaPath, x)
+		e.ExportLua(params.luaPath, x)
 
 	}
 	if params.jsonPath != "" {
-		exporter.ExportJson(params.jsonPath, x)
+		e.ExportJSON(params.jsonPath, x)
 
 	}
 	if params.cshapPath != "" {
-		exporter.ExportCSharp(params.cshapPath, x)
+		e.ExportCSharp(params.cshapPath, x)
 
 	}
 	if params.golangPath != "" {
-		exporter.ExportGolang(params.golangPath, x)
+		e.ExportGolang(params.golangPath, x)
 
 	}
 }
 
-func testJson() {
+func testJSON() {
 	// jsonBytes, _ := ioutil.ReadFile("exports/test.json")
 
 	// var obj []*exports.SimpleTypes

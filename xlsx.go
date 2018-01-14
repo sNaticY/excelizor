@@ -7,23 +7,23 @@ import (
 	"strings"
 )
 
-type Xlsx struct {
+type xlsx struct {
 	Name     string
 	FileName string
-	Template *Field
-	Data     []*Field
-	keymap   map[int]*Field
+	Template *xField
+	Data     []*xField
+	keymap   map[int]*xField
 }
 
-func (x *Xlsx) Init(fileName string, name string) {
+func (x *xlsx) Init(fileName string, name string) {
 	x.Name = name
 	x.FileName = fileName
-	x.Data = make([]*Field, 0)
-	x.keymap = make(map[int]*Field)
+	x.Data = make([]*xField, 0)
+	x.keymap = make(map[int]*xField)
 }
 
-func (x *Xlsx) Parse(rows [][]string) {
-	x.Template = new(Field)
+func (x *xlsx) Parse(rows [][]string) {
+	x.Template = new(xField)
 	if ok, _ := x.Template.Init(x.Name, "struct"); ok {
 		x.Template.ParseSubFieldsDefs(rows[1], rows[2])
 		for i := 3; i < len(rows); i++ {
@@ -58,7 +58,7 @@ func (x *Xlsx) Parse(rows [][]string) {
 	}
 }
 
-func (x *Xlsx) Print() {
+func (x *xlsx) Print() {
 	for k, v := range x.Data {
 		fmt.Print(k, " ")
 		v.Print()

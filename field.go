@@ -8,8 +8,8 @@ import (
 	"strings"
 )
 
-type Field struct {
-	Id          int
+type xField struct {
+	ID          int
 	Name        string
 	FullName    string
 	Type        string
@@ -19,13 +19,13 @@ type Field struct {
 	Size        int
 	Layer       int
 	Level       int
-	Template    *Field
-	Fields      []*Field
-	ParentField *Field
+	Template    *xField
+	Fields      []*xField
+	ParentField *xField
 }
 
-func (f *Field) Init(name string, defination string) (bool, int) {
-	if name == "" && defination == "" && f.Name == "" && f.Type == "" {
+func (f *xField) Init(name string, definition string) (bool, int) {
+	if name == "" && definition == "" && f.Name == "" && f.Type == "" {
 		return false, -1
 	}
 
@@ -37,14 +37,14 @@ func (f *Field) Init(name string, defination string) (bool, int) {
 			f.FullName = f.ParentField.FullName + "." + name
 		}
 	}
-	if defination != "" {
+	if definition != "" {
 		f.Size = 1
-		hasSubField, subFieldDef := f.parseDefination(defination)
+		hasSubField, subFieldDef := f.parseDefinition(definition)
 		if hasSubField {
-			f.Fields = make([]*Field, 0)
+			f.Fields = make([]*xField, 0)
 		}
 		if subFieldDef != "" {
-			f.Template = new(Field)
+			f.Template = new(xField)
 			f.Template.ParentField = f
 			if ok, layer := f.Template.Init("", subFieldDef); ok {
 				f.Size = f.Template.Size*f.Count + 1
@@ -55,11 +55,11 @@ func (f *Field) Init(name string, defination string) (bool, int) {
 	return true, f.Layer
 }
 
-func (f *Field) ParseSubFieldsDefs(names []string, defs []string) {
+func (f *xField) ParseSubFieldsDefs(names []string, defs []string) {
 	subFieldIndex := 1
 	for i := 0; i < len(names); {
 		if f.Template == nil {
-			f.Template = new(Field)
+			f.Template = new(xField)
 			f.Template.Size = 1
 		}
 		f.Template.ParentField = f
@@ -83,7 +83,7 @@ func (f *Field) ParseSubFieldsDefs(names []string, defs []string) {
 	}
 }
 
-func (f *Field) ParseDatas(id int, datas []string) error {
+func (f *xField) ParseDatas(id int, datas []string) error {
 	data := strings.TrimSpace(datas[0])
 	if strings.ToLower(data) == "nil" || strings.ToLower(data) == "null" {
 		return errors.New("this field is null")
@@ -91,7 +91,7 @@ func (f *Field) ParseDatas(id int, datas []string) error {
 	if strings.HasPrefix(f.Type, "//") {
 		return errors.New("this field is comment")
 	}
-	f.Id = id
+	f.ID = id
 	if f.ParentField != nil && f.ParentField.Type == "dict" && strings.TrimSpace(f.Name) == "" {
 		nameData := splitName(data)
 		f.Name = upperInitialChar(nameData[0])
@@ -109,7 +109,7 @@ func (f *Field) ParseDatas(id int, datas []string) error {
 			f.Data = result
 			f.Data = strings.Replace(f.Data, "\"", "\\\"", -1)
 		} else {
-			log.Fatalln("[", err, "] in field", f.FullName, "of data id", f.Id)
+			log.Fatalln("[", err, "] in field", f.FullName, "of data id", f.ID)
 		}
 	} else {
 		f.setSubFieldsData(datas)
@@ -117,7 +117,7 @@ func (f *Field) ParseDatas(id int, datas []string) error {
 	return nil
 }
 
-func (f *Field) setSubFieldsData(data []string) {
+func (f *xField) setSubFieldsData(data []string) {
 	fieldNum := 0
 	var offset int
 	if f.Count == -1 || f.Count == 0 {
@@ -142,7 +142,7 @@ func (f *Field) setSubFieldsData(data []string) {
 			f.Fields[fieldNum].Name = strconv.Itoa(fieldNum)
 			f.Fields[fieldNum].FullName = f.FullName + "." + strconv.Itoa(fieldNum)
 		}
-		if err := f.Fields[fieldNum].ParseDatas(f.Id, subdata); err != nil {
+		if err := f.Fields[fieldNum].ParseDatas(f.ID, subdata); err != nil {
 			f.Fields = append(f.Fields[:fieldNum], f.Fields[fieldNum+1:]...)
 			fieldNum--
 		}
@@ -151,7 +151,7 @@ func (f *Field) setSubFieldsData(data []string) {
 	}
 }
 
-func (f *Field) parseDefination(def string) (bool, string) {
+func (f *xField) parseDefinition(def string) (bool, string) {
 	first := strings.Index(def, "<")
 	last := strings.LastIndex(def, ">:")
 	if first != -1 && last != -1 {
@@ -176,9 +176,9 @@ func (f *Field) parseDefination(def string) (bool, string) {
 	return false, ""
 }
 
-func (f *Field) Copy() *Field {
-	field := new(Field)
-	field.Id = f.Id
+func (f *xField) Copy() *xField {
+	field := new(xField)
+	field.ID = f.ID
 	field.Name = f.Name
 	field.FullName = f.FullName
 	field.Type = f.Type
@@ -193,7 +193,7 @@ func (f *Field) Copy() *Field {
 		field.Template = f.Template.Copy()
 	}
 	if f.Fields != nil {
-		field.Fields = make([]*Field, 0)
+		field.Fields = make([]*xField, 0)
 		for i := 0; i < len(f.Fields); i++ {
 			field.Fields = append(field.Fields, f.Fields[i].Copy())
 		}
@@ -201,7 +201,7 @@ func (f *Field) Copy() *Field {
 	return field
 }
 
-func (f *Field) SetLevel(level int) {
+func (f *xField) SetLevel(level int) {
 	f.Level = level
 	if f.Fields != nil {
 		for j := 0; j < len(f.Fields); j++ {
@@ -210,7 +210,7 @@ func (f *Field) SetLevel(level int) {
 	}
 }
 
-func (f *Field) Print() {
+func (f *xField) Print() {
 	for i := 0; i < f.Level; i++ {
 		fmt.Print(" ")
 	}

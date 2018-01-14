@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
-	lua "github.com/Shopify/go-lua"
 )
 
 type parameters struct {
@@ -129,31 +128,5 @@ func exportFile(x *xlsx) {
 	if params.golangPath != "" {
 		e.ExportGolang(params.golangPath, x)
 
-	}
-}
-
-func testJSON() {
-	// jsonBytes, _ := ioutil.ReadFile("exports/test.json")
-
-	// var obj []*exports.SimpleTypes
-
-	// err := json.Unmarshal(jsonBytes, &obj)
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// fmt.Printf("%+v\n", obj)
-	// for i, v := range obj {
-	// 	fmt.Printf("%v = %v\n", i, v)
-	// }
-}
-
-func testLua() {
-	l := lua.NewState()
-	lua.OpenLibraries(l)
-
-	err := lua.DoFile(l, "exports/test.lua")
-	if err != nil {
-		panic(err)
 	}
 }

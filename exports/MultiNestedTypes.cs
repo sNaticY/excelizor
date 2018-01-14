@@ -2,19 +2,11 @@ using System.Collections.Generic;
 
 namespace Configs
 {
-    public class SimpleTypes 
+    public class MultiNestedTypes 
     {
         public int Id;
-        public int NumberTest;
-        public string StringTest;
-        public float FloatTest;
-        public bool BoolTest;
-        public Dictionary<string, float> DictTest1;
-        public Dictionary<string, float> DictTest2;
-        public List<string> ListTest1;
-        public List<string> ListTest2;
-        public Dictionary<string, Dictionary<string, string>> DictTest3;
-        public Dictionary<string, Dictionary<string, string>> DictTest4;
+        public Dictionary<string, Dictionary<string, int>> DictTest3;
+        public Dictionary<string, Dictionary<string, float>> DictTest4;
         public Dictionary<string, Dictionary<string, string>> DictTest5;
         public List<List<string>> ListTest3;
         public List<List<string>> ListTest4;

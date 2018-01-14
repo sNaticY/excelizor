@@ -40,9 +40,18 @@ func init() {
 
 func main() {
 	flag.Parse()
-	if params.excelSrc == "" || (params.luaPath == "" && params.jsonPath == "" && params.cshapPath == "" && params.golangPath == "") || flag.Arg(0) == "-h" || flag.Arg(0) == "--help" {
-		fmt.Println("\nUsage: excelizor -p <path> [-lua=<luaExportPath>] [-json=<luaExportPath>] [-csharp=<luaExportPath>] [-golang=<luaExportPath>]")
+
+	if flag.Arg(0) == "test" {
+		params.excelSrc = "./excels/"
+		params.luaPath = "./exports/"
+		params.jsonPath = "./exports/"
+		params.cshapPath = "./exports/"
+		params.golangPath = "./exports/"
+	} else if params.excelSrc == "" || (params.luaPath == "" && params.jsonPath == "" && params.cshapPath == "" && params.golangPath == "") || flag.Arg(0) == "help" {
+		fmt.Println("Usage: excelizor -p <path> [-lua=<luaExportPath>] [-json=<luaExportPath>] [-csharp=<luaExportPath>] [-golang=<luaExportPath>]")
+		fmt.Println("       excelizer (help|test)")
 		flag.PrintDefaults()
+		return
 	}
 
 	loadedFiles = make(map[string]*fileXlsx)
@@ -53,10 +62,14 @@ func main() {
 	}
 
 	for key, value := range loadedFiles {
-		fmt.Print("Parse and export file", key, ". . . ")
+		output := "Parse and export file [ " + key + " ] "
+		fmt.Print(output)
+		for i := 0; i < 60-len(output); i++ {
+			fmt.Print(".")
+		}
 		value.xlsx = parseFile(key, value.file)
 		exportFile(value.xlsx)
-		fmt.Print("Success!\n")
+		fmt.Print(" Success!\n")
 	}
 
 	//x.Print()
@@ -81,12 +94,19 @@ func loadFile(path string, f os.FileInfo, err error) error {
 }
 
 func parseFile(fileName string, file *excelize.File) *Xlsx {
-	rows := file.GetRows(file.GetSheetName(1))
+	var data [][]string
+	sheetName := file.GetSheetName(1)
+
+	if sheetName == "Vertical" {
+		data = convertToVertical(file.GetRows(sheetName))
+	} else {
+		data = file.GetRows(sheetName)
+	}
 	x := new(Xlsx)
 
 	lower, camel := name2lower2Camel(fileName)
 	x.Init(lower, camel)
-	x.Parse(rows)
+	x.Parse(data)
 	return x
 }
 

@@ -6,6 +6,21 @@ import (
 	"strings"
 )
 
+func convertToVertical(data [][]string) [][]string {
+	ret := make([][]string, 0)
+	for i := 0; i < len(data[0]); i++ {
+		row := make([]string, 0)
+		row = append(row, data[0][i])
+		ret = append(ret, row)
+	}
+	for i := 1; i < len(data); i++ {
+		for j := 0; j < len(data[i]); j++ {
+			ret[j] = append(ret[j], data[i][j])
+		}
+	}
+	return ret
+}
+
 func trimData(data string) string {
 	before := data
 	for {

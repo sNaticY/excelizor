@@ -128,10 +128,10 @@ func (f *Field) setSubFieldsData(data []string) {
 
 	for i := offset; i < len(data); {
 		if len(f.Fields) <= fieldNum {
-			// if data[i] == "" {
-			// 	i++
-			// 	continue
-			// }
+			if data[i] == "" {
+				i++
+				continue
+			}
 			subField := f.Template.Copy()
 			subField.ParentField = f
 			f.Fields = append(f.Fields, subField)

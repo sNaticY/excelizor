@@ -28,6 +28,11 @@ func (x *Xlsx) Parse(rows [][]string) {
 		x.Template.ParseSubFieldsDefs(rows[1], rows[2])
 		for i := 3; i < len(rows); i++ {
 			field := x.Template.Copy()
+
+			// comment row
+			if strings.HasPrefix(rows[i][0], "//") {
+				continue
+			}
 			id, _ := strconv.Atoi(rows[i][0])
 			if _, ok2 := x.keymap[id]; !ok2 {
 				field.ParseDatas(id, rows[i])

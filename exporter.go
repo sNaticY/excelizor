@@ -4,11 +4,11 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"path"
 	"strings"
 	"text/template"
 
 	"github.com/Masterminds/sprig"
-	lua "github.com/Shopify/go-lua"
 )
 
 var csharpTypeNames map[string]string
@@ -31,41 +31,14 @@ func (e *Exporter) Init() {
 	initGolangTypeNames()
 }
 
-func (e *Exporter) ExportLua(xlsx *Xlsx) {
-	tmpl, err := template.New("test").Funcs(sprig.HermeticTxtFuncMap()).Parse(string(e.luaTableTemplate))
+func (e *Exporter) ExportLua(folder string, xlsx *Xlsx) {
+	tmpl, err := template.New("luaExport").Funcs(sprig.HermeticTxtFuncMap()).Parse(string(e.luaTableTemplate))
 	//tmpl.Funcs(sprig.FuncMap())
 	if err != nil {
 		panic(err)
 	}
 
-	newFile, err := os.Create("exports/test.lua")
-	defer newFile.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	err = tmpl.Execute(newFile, xlsx)
-	if err != nil {
-		panic(err)
-	}
-
-	l := lua.NewState()
-	lua.OpenLibraries(l)
-
-	err = lua.DoFile(l, "exports/test.lua")
-	if err != nil {
-		panic(err)
-	}
-}
-
-func (e *Exporter) ExportJson(xlsx *Xlsx) {
-	tmpl, err := template.New("test").Funcs(sprig.HermeticTxtFuncMap()).Parse(string(e.jsonTemplate))
-	//tmpl.Funcs(sprig.FuncMap())
-	if err != nil {
-		panic(err)
-	}
-
-	newFile, err := os.Create("exports/test.json")
+	newFile, err := os.Create(path.Join(folder, xlsx.FileName+".lua"))
 	defer newFile.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -77,14 +50,14 @@ func (e *Exporter) ExportJson(xlsx *Xlsx) {
 	}
 }
 
-func (e *Exporter) ExportCSharp(xlsx *Xlsx) {
-	tmpl, err := template.New("test").Funcs(sprig.HermeticTxtFuncMap()).Funcs(genericFuncMap()).Parse(string(e.csharpTemplate))
+func (e *Exporter) ExportJson(folder string, xlsx *Xlsx) {
+	tmpl, err := template.New("jsonExport").Funcs(sprig.HermeticTxtFuncMap()).Parse(string(e.jsonTemplate))
 	//tmpl.Funcs(sprig.FuncMap())
 	if err != nil {
 		panic(err)
 	}
 
-	newFile, err := os.Create("exports/test.cs")
+	newFile, err := os.Create(path.Join(folder, xlsx.FileName+".json"))
 	defer newFile.Close()
 	if err != nil {
 		log.Fatal(err)
@@ -96,14 +69,33 @@ func (e *Exporter) ExportCSharp(xlsx *Xlsx) {
 	}
 }
 
-func (e *Exporter) ExportGolang(xlsx *Xlsx) {
-	tmpl, err := template.New("test").Funcs(sprig.HermeticTxtFuncMap()).Funcs(genericFuncMap()).Parse(string(e.golangTemplate))
+func (e *Exporter) ExportCSharp(folder string, xlsx *Xlsx) {
+	tmpl, err := template.New("csharpExport").Funcs(sprig.HermeticTxtFuncMap()).Funcs(genericFuncMap()).Parse(string(e.csharpTemplate))
 	//tmpl.Funcs(sprig.FuncMap())
 	if err != nil {
 		panic(err)
 	}
 
-	newFile, err := os.Create("exports/test.go")
+	newFile, err := os.Create(path.Join(folder, xlsx.Name+".cs"))
+	defer newFile.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	err = tmpl.Execute(newFile, xlsx)
+	if err != nil {
+		panic(err)
+	}
+}
+
+func (e *Exporter) ExportGolang(folder string, xlsx *Xlsx) {
+	tmpl, err := template.New("golangExport").Funcs(sprig.HermeticTxtFuncMap()).Funcs(genericFuncMap()).Parse(string(e.golangTemplate))
+	//tmpl.Funcs(sprig.FuncMap())
+	if err != nil {
+		panic(err)
+	}
+
+	newFile, err := os.Create(path.Join(folder, xlsx.FileName+".go"))
 	defer newFile.Close()
 	if err != nil {
 		log.Fatal(err)

@@ -88,6 +88,9 @@ func (f *Field) ParseDatas(id int, datas []string) error {
 	if strings.ToLower(data) == "nil" || strings.ToLower(data) == "null" {
 		return errors.New("this field is null")
 	}
+	if strings.HasPrefix(f.Type, "//") {
+		return errors.New("this field is comment")
+	}
 	f.Id = id
 	if f.ParentField != nil && f.ParentField.Type == "dict" && strings.TrimSpace(f.Name) == "" {
 		nameData := splitName(data)

@@ -9,8 +9,6 @@ import (
 	"path"
 	"strings"
 	"text/template"
-
-	"github.com/Masterminds/sprig"
 )
 
 var csharpTypeNames map[string]string
@@ -34,8 +32,7 @@ func (e *exporter) Init() {
 }
 
 func (e *exporter) ExportLua(folder string, xl *xlsx) {
-	tmpl, err := template.New("luaExport").Funcs(sprig.HermeticTxtFuncMap()).Parse(string(e.luaTableTemplate))
-	//tmpl.Funcs(sprig.FuncMap())
+	tmpl, err := template.New("luaExport").Funcs(genericFuncMap()).Parse(string(e.luaTableTemplate))
 	if err != nil {
 		panic(err)
 	}
@@ -53,8 +50,7 @@ func (e *exporter) ExportLua(folder string, xl *xlsx) {
 }
 
 func (e *exporter) ExportJSON(folder string, xl *xlsx) {
-	tmpl, err := template.New("jsonExport").Funcs(sprig.HermeticTxtFuncMap()).Parse(string(e.jsonTemplate))
-	//tmpl.Funcs(sprig.FuncMap())
+	tmpl, err := template.New("jsonExport").Funcs(genericFuncMap()).Parse(string(e.jsonTemplate))
 	if err != nil {
 		panic(err)
 	}
@@ -72,8 +68,7 @@ func (e *exporter) ExportJSON(folder string, xl *xlsx) {
 }
 
 func (e *exporter) ExportCSharp(folder string, xl *xlsx) {
-	tmpl, err := template.New("csharpExport").Funcs(sprig.HermeticTxtFuncMap()).Funcs(genericFuncMap()).Parse(string(e.csharpTemplate))
-	//tmpl.Funcs(sprig.FuncMap())
+	tmpl, err := template.New("csharpExport").Funcs(genericFuncMap()).Parse(string(e.csharpTemplate))
 	if err != nil {
 		panic(err)
 	}
@@ -91,8 +86,7 @@ func (e *exporter) ExportCSharp(folder string, xl *xlsx) {
 }
 
 func (e *exporter) ExportGolang(folder string, xl *xlsx) {
-	tmpl, err := template.New("golangExport").Funcs(sprig.HermeticTxtFuncMap()).Funcs(genericFuncMap()).Parse(string(e.golangTemplate))
-	//tmpl.Funcs(sprig.FuncMap())
+	tmpl, err := template.New("golangExport").Funcs(genericFuncMap()).Parse(string(e.golangTemplate))
 	if err != nil {
 		panic(err)
 	}
@@ -117,9 +111,15 @@ func genericFuncMap() map[string]interface{} {
 	var genericMap = map[string]interface{}{
 		"GetCSharpTypeName": parseCsharpType,
 		"GetGolangTypeName": parseGolangType,
+		"indent":            indent,
 	}
 
 	return genericMap
+}
+
+func indent(spaces int, v string) string {
+	pad := strings.Repeat(" ", spaces)
+	return pad + strings.Replace(v, "\n", "\n"+pad, -1)
 }
 
 func parseCsharpType(longType string) string {

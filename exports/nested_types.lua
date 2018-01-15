@@ -10,11 +10,6 @@ local NestedTypes = {
             Item1 = 10,
             Item2 = 11, 
         },
-        ListTest1 = {
-            [0] = 123,
-            [1] = 124,
-            [2] = 125,
-        },
         ListTest2 = {
             [0] = 0.200,
             [1] = 0.400,

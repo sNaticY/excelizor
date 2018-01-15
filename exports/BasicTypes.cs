@@ -7,7 +7,6 @@ namespace Configs
         public int Id;
         public int NumberTest;
         public string StringTest;
-        public float FloatTest;
         public bool BoolTest;
     }
 }

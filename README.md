@@ -18,7 +18,7 @@ or you could download release version directly at [Release Page](https://github.
 ## Usage
 
 ``` Text
-Usage: excelizor -p <path> [-lua=<luaExportPath>] [-json=<luaExportPath>] [-csharp=<luaExportPath>] [-golang=<luaExportPath>]
+Usage: excelizor -p <path> [-lua=<luaExportPath>] [-json=<jsonExportPath>] [-csharp=<csharpExportPath>] [-golang=<golangExportPath>] [-tag=<tag>]
   -csharp string
     	path to place exported .cs class files, export no .cs files if parameter is missing
   -golang string
@@ -29,6 +29,8 @@ Usage: excelizor -p <path> [-lua=<luaExportPath>] [-json=<luaExportPath>] [-csha
     	path to place exported .lua files, export no .lua files if parameter is missing
   -p path
     	[Required] Relative path of excel files folder
+  -tag string
+        only field with this tag or empty string will be exported
 ```
 
 ## Excel Content Format
@@ -43,9 +45,12 @@ Only the first sheet in .xlsx file will be export
 
 ### Head & Key
 
-The first 3 rows in your excel is Head, 
+The first 4 rows in your excel is Head, 
 
-First row is descriptions of each field, It will not be exported at all so you can fill it with everything you want. Second row is name of each field and the third row is type of each field.
+1. First row is descriptions of each field, It will not be exported at all so you can fill it with everything you want.   
+2. Second row is name of each field. 
+3. Third row is type of each field. [int, float, string, bool, dict, list]
+4. Forth row is tag of each field, same tag with arguments and empty tag will always be exported.
 
 The first field must be "Id-int" as key of every row.
 
@@ -63,10 +68,11 @@ Excel
 | ---- | ---------- | ---------------- | --------- | -------- | ----------------- |
 | Id   | NumberTest | StringTest       | FloatTest | BoolTest | can be empty      |
 | Int  | int        | string           | float     | bool     | //comment         |
+|      |            |                  | client    | server   |                   |
 | 1001 | 345        | This is a string | 2,6       | true     | won't be exported |
 | 1002 | nil        | nil              | nil       | nil      | nil               |
 
-Export Json
+Export Json (-tag with "client"), so the field `bool BoolTest = true/false` will be ignored, but `float FloatTest = 2.6` will be included
 
 ``` json
 [ 
@@ -83,7 +89,7 @@ Export Json
 ]
 ```
 
-Export Lua
+Export Lua(-tag with 'server"'), so the field `bool BoolTest = true/false` will be included, `float FloatTest = 2.6` will be ignored
 
 ``` lua
 local BasicTypes = {
@@ -91,7 +97,6 @@ local BasicTypes = {
         Id = 1001,
         NumberTest = 345,
         StringTest = "This is a string",
-        FloatTest = 2.600,
         BoolTest = true,
     },
     [1002] = {
@@ -102,7 +107,7 @@ local BasicTypes = {
 return BasicTypes
 ```
 
-Export csharp class
+Export csharp class (with no tag), so all the fields with tag "client" and "server" will be ignored
 
 ``` csharp
 using System.Collections.Generic;
@@ -114,8 +119,6 @@ namespace Configs
         public int Id;
         public int NumberTest;
         public string StringTest;
-        public float FloatTest;
-        public bool BoolTest;
     }
 }
 ```
@@ -129,8 +132,6 @@ type BasicTypes struct {
 	Id int32 `json:"Id"`
 	NumberTest int32 `json:"NumberTest"`
 	StringTest string `json:"StringTest"`
-	FloatTest float32 `json:"FloatTest"`
-	BoolTest bool `json:"BoolTest"`
 }
 ```
 
@@ -143,12 +144,13 @@ type BasicTypes struct {
 
 Excel
 
-|      | Spread Dictionary |       |       |       | Fold Dictionary      | Spread List |      |      |      | Fold List     |
-| ---- | ----------------- | ----- | ----- | ----- | -------------------- | ----------- | ---- | ---- | ---- | ------------- |
-| Id   | dictTest1         | Item1 | Item2 | Item3 | DictTest2            | ListTest1   |      |      |      | ListTest2     |
-| int  | dict<float>:3     |       |       |       | dict<int>:0          | list<int>:3 |      |      |      | list<float>:0 |
-| 2002 |                   | 4.44  | 5.55  | 6.66  | Item1=10 \| Item2=11 |             | 123  | 124  | 125  | 0.2\|0.4\|0.6 |
-| 2003 |                   | 4.44  | nil   | 6.66  | nil                  | nil         |      |      |      | 1.3\|1.5\|1.7 |
+|      | Spread Dictionary |       |       |       | Fold Dictionary      | Spread List   |      |      |      | Fold List     |
+| ---- | ----------------- | ----- | ----- | ----- | -------------------- | ------------- | ---- | ---- | ---- | ------------- |
+| Id   | dictTest1         | Item1 | Item2 | Item3 | DictTest2            | ListTest1     |      |      |      | ListTest2     |
+| int  | `dict<float>:3`   |       |       |       | `dict<int>:0`        | `list<int>:3` |      |      |      | list<float>:0 |
+|      |                   |       |       |       |                      |               |      |      |      |               |
+| 2002 |                   | 4.44  | 5.55  | 6.66  | Item1=10 \| Item2=11 |               | 123  | 124  | 125  | 0.2\|0.4\|0.6 |
+| 2003 |                   | 4.44  | nil   | 6.66  | nil                  | nil           |      |      |      | 1.3\|1.5\|1.7 |
 
 Export Json
 
@@ -275,19 +277,21 @@ type NestedTypes struct {
 
 Excel
 
-| KEY  | DICTINDICT1         |          |       |       |          |       |       |
-| ---- | ------------------- | -------- | ----- | ----- | -------- | ----- | ----- |
-| Id   | DictTest3           | SubDict1 | Item1 | Item2 | SubDict2 | Item1 | Item2 |
-| int  | dict<dict<int>:2>:2 |          |       |       |          |       |       |
-| 3001 |                     |          | 3111  | 3112  |          | 3121  | 3122  |
-| 3002 |                     | nil      |       |       |          | 3221  | 3222  |
+| KEY  | DICTINDICT1           |          |       |       |          |       |       |
+| ---- | --------------------- | -------- | ----- | ----- | -------- | ----- | ----- |
+| Id   | DictTest3             | SubDict1 | Item1 | Item2 | SubDict2 | Item1 | Item2 |
+| int  | `dict<dict<int>:2>:2` |          |       |       |          |       |       |
+|      |                       |          |       |       |          |       |       |
+| 3001 |                       |          | 3111  | 3112  |          | 3121  | 3122  |
+| 3002 |                       | nil      |       |       |          | 3221  | 3222  |
 
-| DICTINDICT2           |                                 |                      | DICTINDICT3                              |
-| --------------------- | ------------------------------- | -------------------- | ---------------------------------------- |
-| DictTest4             | SubDict1                        | SubDict2             | DictTest5                                |
-| dict<dict<float>:0>:2 |                                 |                      | dict<dict<string>:0>:0                   |
-|                       | it1=31.11\|it2=31.12\|it3=31.13 | it1=31.21\|it2=31.22 | Subdict1={item1=asd\|item2=sdf}\|Subdict2={item1=qwe\|item2=wer} |
-| nil                   |                                 |                      | nil                                      |
+| DICTINDICT2             |                                 |                      | DICTINDICT3                              |
+| ----------------------- | ------------------------------- | -------------------- | ---------------------------------------- |
+| DictTest4               | SubDict1                        | SubDict2             | DictTest5                                |
+| `dict<dict<float>:0>:2` |                                 |                      | `dict<dict<string>:0>:0`                 |
+|                         |                                 |                      |                                          |
+|                         | it1=31.11\|it2=31.12\|it3=31.13 | it1=31.21\|it2=31.22 | Subdict1={item1=asd\|item2=sdf}\|Subdict2={item1=qwe\|item2=wer} |
+| nil                     |                                 |                      | nil                                      |
 
 Export Json
 
@@ -430,25 +434,26 @@ Sometimes you have only few rows in a sheet but many fields, it will be much eas
 | ---- | ---------- | ---------------- | --------- | --------- | --------- | --------- | -------------- |
 | Id   | NumberTest | StringTest       | FloatTest | BoolTest1 | BoolTest2 | BoolTest3 | 4,5,6,7,8,9,10 |
 | int  | int        | string           | float     | bool      | bool      | bool      | ,,,            |
+|      |            |                  |           |           |           |           |                |
 | 1001 | 345        | This is a string | 2.6       | true      | false     | true      | ,,,            |
 
 Edit your sheet name (default is "Sheet1") to "Vertical" and then you can fill your cell like this
 
-|      | Id         | int    | 1001             |
-| ---- | ---------- | ------ | ---------------- |
-| 整型   | NumberTest | int    | 345              |
-| 字符串  | StringTest | string | This is a string |
-| 浮点   | FloatTest  | float  | 2.6              |
-| 布尔   | BoolTest1  | bool   | true             |
-| 布尔   | BoolTest2  | bool   | false            |
-| 布尔   | BoolTest3  | bool   | true             |
-| 布尔   | BoolTest4  | bool   | false            |
-| 布尔   | BoolTest5  | bool   | true             |
-| 布尔   | BoolTest6  | bool   | false            |
-| 布尔   | BoolTest7  | bool   | true             |
-| 布尔   | BoolTest8  | bool   | false            |
-| 布尔   | BoolTest9  | bool   | true             |
-| 布尔   | BoolTest10 | bool   | false            |
+|      | Id         | int    |      | 1001             |
+| ---- | ---------- | ------ | ---- | ---------------- |
+| 整型   | NumberTest | int    |      | 345              |
+| 字符串  | StringTest | string |      | This is a string |
+| 浮点   | FloatTest  | float  |      | 2.6              |
+| 布尔   | BoolTest1  | bool   |      | true             |
+| 布尔   | BoolTest2  | bool   |      | false            |
+| 布尔   | BoolTest3  | bool   |      | true             |
+| 布尔   | BoolTest4  | bool   |      | false            |
+| 布尔   | BoolTest5  | bool   |      | true             |
+| 布尔   | BoolTest6  | bool   |      | false            |
+| 布尔   | BoolTest7  | bool   |      | true             |
+| 布尔   | BoolTest8  | bool   |      | false            |
+| 布尔   | BoolTest9  | bool   |      | true             |
+| 布尔   | BoolTest10 | bool   |      | false            |
 
 Then everyhing still works well.
 
@@ -464,6 +469,7 @@ If it is not enough for you to only use comment column ( field type start with "
 | ------ | -------------- | ---------------- | --------- | -------- | ----------------- |
 | Id     | NumberTest     | StringTest       | FloatTest | BoolTest | can be empty      |
 | Int    | int            | string           | float     | bool     | //comment         |
+|  |  |  |  |  |  |
 | 1001   | 345            | This is a string | 2,6       | true     | won't be exported |
 | //1002 | ok, I can fill | everything       | because   | this row | will be ignored   |
 

@@ -14,6 +14,7 @@ type xField struct {
 	FullName    string
 	Type        string
 	LongType    string
+	Tag         string
 	Data        string
 	Count       int
 	Size        int
@@ -24,7 +25,7 @@ type xField struct {
 	ParentField *xField
 }
 
-func (f *xField) Init(name string, definition string) (bool, int) {
+func (f *xField) Init(name string, definition string, tag string) (bool, int) {
 	if name == "" && definition == "" && f.Name == "" && f.Type == "" {
 		return false, -1
 	}
@@ -39,14 +40,14 @@ func (f *xField) Init(name string, definition string) (bool, int) {
 	}
 	if definition != "" {
 		f.Size = 1
-		hasSubField, subFieldDef := f.parseDefinition(definition)
+		hasSubField, subFieldDef := f.parseDefinition(definition, tag)
 		if hasSubField {
 			f.Fields = make([]*xField, 0)
 		}
 		if subFieldDef != "" {
 			f.Template = new(xField)
 			f.Template.ParentField = f
-			if ok, layer := f.Template.Init("", subFieldDef); ok {
+			if ok, layer := f.Template.Init("", subFieldDef, tag); ok {
 				f.Size = f.Template.Size*f.Count + 1
 				f.Layer = layer + 1
 			}
@@ -55,7 +56,7 @@ func (f *xField) Init(name string, definition string) (bool, int) {
 	return true, f.Layer
 }
 
-func (f *xField) ParseSubFieldsDefs(names []string, defs []string) {
+func (f *xField) ParseSubFieldsDefs(names []string, defs []string, tags []string) {
 	subFieldIndex := 1
 	for i := 0; i < len(names); {
 		if f.Template == nil {
@@ -68,10 +69,10 @@ func (f *xField) ParseSubFieldsDefs(names []string, defs []string) {
 		if f.Type == "list" {
 			subFieldName = strconv.Itoa(subFieldIndex)
 		}
-		if ok, _ := field.Init(subFieldName, defs[i]); ok {
+		if ok, _ := field.Init(subFieldName, defs[i], tags[i]); ok {
 			num := field.Size
 			if num > 1 {
-				field.ParseSubFieldsDefs(names[i+1:i+num], defs[i+1:i+num])
+				field.ParseSubFieldsDefs(names[i+1:i+num], defs[i+1:i+num], tags[i+1:i+num])
 			}
 			f.Fields = append(f.Fields, field)
 
@@ -90,6 +91,9 @@ func (f *xField) ParseDatas(id int, datas []string) error {
 	}
 	if strings.HasPrefix(f.Type, "//") {
 		return errors.New("this field is comment")
+	}
+	if f.Tag != "" && f.Tag != params.tag {
+		return errors.New("unexported tag")
 	}
 	f.ID = id
 	if f.ParentField != nil && f.ParentField.Type == "dict" && strings.TrimSpace(f.Name) == "" {
@@ -151,7 +155,7 @@ func (f *xField) setSubFieldsData(data []string) {
 	}
 }
 
-func (f *xField) parseDefinition(def string) (bool, string) {
+func (f *xField) parseDefinition(def string, tag string) (bool, string) {
 	first := strings.Index(def, "<")
 	last := strings.LastIndex(def, ">:")
 	if first != -1 && last != -1 {
@@ -159,6 +163,7 @@ func (f *xField) parseDefinition(def string) (bool, string) {
 			f.Type = def[:first]
 			f.LongType = def[:last+1]
 			f.Count = count
+			f.Tag = tag
 		}
 		return true, def[first+1 : last]
 	}
@@ -167,9 +172,11 @@ func (f *xField) parseDefinition(def string) (bool, string) {
 	f.LongType = def
 	f.Count = 1
 	f.Size = 1
+	f.Tag = tag
 	if def == "struct" {
 		f.Count = -1
 		f.Size = -1
+		f.Tag = ""
 		return true, ""
 	}
 
@@ -181,6 +188,7 @@ func (f *xField) Copy() *xField {
 	field.ID = f.ID
 	field.Name = f.Name
 	field.FullName = f.FullName
+	field.Tag = f.Tag
 	field.Type = f.Type
 	field.LongType = f.LongType
 	field.Data = f.Data

@@ -16,6 +16,7 @@ type parameters struct {
 	jsonPath   string
 	cshapPath  string
 	golangPath string
+	tag        string
 }
 
 var params *parameters
@@ -31,6 +32,7 @@ func init() {
 	params = new(parameters)
 	flag.StringVar(&params.excelSrc, "p", "", "[Required] Relative `path` of excel files folder")
 
+	flag.StringVar(&params.tag, "tag", "", "only field with this tag or empty string will be exported")
 	flag.StringVar(&params.luaPath, "lua", "", "path to place exported .lua files, export no .lua files if parameter is missing")
 	flag.StringVar(&params.jsonPath, "json", "", "path to place exported .json files, export no .json files if parameter is missing")
 	flag.StringVar(&params.cshapPath, "csharp", "", "path to place exported .cs class files, export no .cs files if parameter is missing")
@@ -42,13 +44,14 @@ func main() {
 
 	if flag.Arg(0) == "test" {
 		params.excelSrc = "./excels/"
+		params.tag = "client"
 		params.luaPath = "./exports/"
 		params.jsonPath = "./exports/"
 		params.cshapPath = "./exports/"
 		params.golangPath = "./exports/"
 	} else if params.excelSrc == "" || (params.luaPath == "" && params.jsonPath == "" && params.cshapPath == "" && params.golangPath == "") || flag.Arg(0) == "help" {
-		fmt.Println("Usage: excelizor -p <path> [-lua=<luaExportPath>] [-json=<luaExportPath>] [-csharp=<luaExportPath>] [-golang=<luaExportPath>]")
-		fmt.Println("       excelizer (help|test)")
+		fmt.Println("Usage: excelizor -p <path> [-lua=<luaExportPath>] [-json=<jsonExportPath>] [-csharp=<csharpExportPath>] [-golang=<golangExportPath>] [-tag=<tag>] ")
+		fmt.Println("       excelizor (help|test)")
 		flag.PrintDefaults()
 		return
 	}

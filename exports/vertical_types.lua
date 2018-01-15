@@ -5,7 +5,6 @@ local VerticalTypes = {
         StringTest = "This is a string",
         FloatTest = 2.600,
         BoolTest1 = true,
-        BoolTest2 = false,
         BoolTest3 = true,
         BoolTest4 = false,
         BoolTest5 = true,

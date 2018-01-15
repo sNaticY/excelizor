@@ -11,17 +11,6 @@
                 "Item2": 3122 
             } 
         }, 
-        "DictTest4": {  
-            "SubDict1": { 
-                "It1": 31.110,
-                "It2": 31.120,
-                "It3": 31.130 
-            }, 
-            "SubDict2": { 
-                "It1": 31.210,
-                "It2": 31.220 
-            } 
-        }, 
         "DictTest5": {  
             "Subdict1": { 
                 "Item1": "asd",

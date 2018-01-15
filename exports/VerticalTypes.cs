@@ -9,7 +9,6 @@ namespace Configs
         public string StringTest;
         public float FloatTest;
         public bool BoolTest1;
-        public bool BoolTest2;
         public bool BoolTest3;
         public bool BoolTest4;
         public bool BoolTest5;

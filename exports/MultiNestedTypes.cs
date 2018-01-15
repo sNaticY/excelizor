@@ -6,7 +6,6 @@ namespace Configs
     {
         public int Id;
         public Dictionary<string, Dictionary<string, int>> DictTest3;
-        public Dictionary<string, Dictionary<string, float>> DictTest4;
         public Dictionary<string, Dictionary<string, string>> DictTest5;
         public List<List<string>> ListTest3;
         public List<List<string>> ListTest4;

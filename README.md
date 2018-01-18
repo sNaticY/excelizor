@@ -49,7 +49,7 @@ Only the first sheet in .xlsx file will be export
 
 > Default name in excel is "Sheet1", or you could give a special name "Vertical"
 
-### Head & Key 表头与键
+### Head & Key | 表头与键
 
 The first 4 rows in your excel is Head
 
@@ -85,7 +85,7 @@ The first field must be "Id-int" as a key of every row
 
 Excel
 
-|      | 整型         | 字符串              | 浮点        | 布尔       | 注释(不导出)           |
+|      | 整型       | 字符串            | 浮点      | 布尔     | 注释(不导出)       |
 | ---- | ---------- | ---------------- | --------- | -------- | ----------------- |
 | Id   | NumberTest | StringTest       | FloatTest | BoolTest | can be empty      |
 | Int  | int        | string           | float     | bool     | //comment         |
@@ -166,11 +166,11 @@ type BasicTypes struct {
 
 * list<T>:δ  `List<T>` in csharp and `[]T` in golang
 * dict<T>:δ  `Dictionary<string, T>` in csharp and `map[string]T` in golang
+
+> T is any Type such as `float` or `int`,  δ is count of column which it cost in table, can be [0, +∞)], When δ == 0, the number of elements in the structure can be arbitrary and seperated with "|", otherwise, the maximum number of elements can not exceed the delta, only one element in every single cell.
 	
 * list<T>:δ  对应 c# 的`List<T>`以及 golang 中的`[]T` 
 * dict<T>:δ  对应 c# 的`Dictionary<string, T>`以及 golang 中的`map[string]T`
-
-> T is any Type such as `float` or `int`,  δ is count of column which it cost in table, can be [0, +∞)], When δ == 0, the number of elements in the structure can be arbitrary and seperated with "|", otherwise, the maximum number of elements can not exceed the delta, only one element in every single cell.
 
 > T 代表某个类型如`float`或`int`，δ 代表该字段占用的后续列数且 δ >= 0，当 δ == 0 时，该 list 或 dict 中元素的个数将不受数量限制，且使用 "|" 分隔，当 δ > 0 时，该 list 或 dict 中元素的数量将不得大于 δ，每个单元格中填写一个元素
 
@@ -304,11 +304,11 @@ type NestedTypes struct {
 
 * list<ANY_TYPE_OR_NESTED_TYPE>:δ such as list<dict<string>:0>:5
 * dict<ANY_TYPE_OR_NESTED_TYPE>:δ such as dict<list<dict<float>:0>:2>:3
+
+> **MOST OF LOGIC IS EXACTLY THE SAME AS BEFORE. HARD TO EXPLAIN, LET'S SEE SOME EXAMPLES**
 	
 * list<ANY_TYPE_OR_NESTED_TYPE>:δ 例如 list<dict<string>:0>:5
 * dict<ANY_TYPE_OR_NESTED_TYPE>:δ 例如 dict<list<dict<float>:0>:2>:3
-
-> **MOST OF LOGIC IS EXACTLY THE SAME AS BEFORE. HARD TO EXPLAIN, LET'S SEE SOME EXAMPLES**
 
 > **表格填写逻辑与之前完全相同，很难描述，大家直接看示例即可** 好吧其实是英文不好描述不出来，大概就是一个嵌套的结构使用"{"和"}"括起来再使用"|"分隔就好
 
@@ -522,7 +522,7 @@ If it is not enough for you to only use comment column ( field type start with "
 
 如果注释列的功能(以"//"起始的字段将被忽略)还不够的话，可以插入以"//"为id起始的一行，该行在导出时会被忽略。 
 
-|        | 整型             | 字符串              | 浮点        | 布尔       | 注释(不导出)           |
+|        | 整型           | 字符串            | 浮点      | 布尔     | 注释(不导出)       |
 | ------ | -------------- | ---------------- | --------- | -------- | ----------------- |
 | Id     | NumberTest     | StringTest       | FloatTest | BoolTest | can be empty      |
 | Int    | int            | string           | float     | bool     | //comment         |

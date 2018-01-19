@@ -60,12 +60,12 @@ The first 4 rows in your excel is Head
 3. Third row is type of each field. [int, float, string, bool, dict, list]
 4. Forth row is tag of each field, same tag with arguments and empty tag will always be exported.
 
+The first field must be "Id-int" as a key of every row
+
 1. 第一行是每一个对应字段的描述，该行的任何数据都不会被导出，因此可任意填写(一般是一个中文注释。。。)
 2. 第二行是字段名称
 3. 第三行是字段类型，如[int, float, string, bool, dict, list]等
 4. 第四行为对应字段的标签，仅当该值与导出时 -tag 参数一致或留空的字段会被导出
-
-The first field must be "Id-int" as a key of every row
 
 第一个字段目前仅支持 "Id-int" 作为每一行数据的 key
 
@@ -76,6 +76,7 @@ The first field must be "Id-int" as a key of every row
 * float: `float32` in golang and `float` in csharp
 * bool: is `bool`. [true, T, 1, TRUE] is `true` and [false, F, 0, FALSE] is `false`
 * comment: any string in type-row start with `//` is commet, that field in each row will be ignored
+
 
 * int: 对应 golang 的`int32`和 c# 中的`int`
 * string: 就是普通的`string`

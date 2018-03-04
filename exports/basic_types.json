@@ -2,7 +2,6 @@
     { 
         "Id": 1001,
         "NumberTest": 345,
-        "StringTest": "This is a string",
         "BoolTest": true
     },
     { 

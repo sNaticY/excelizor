@@ -4,9 +4,8 @@ namespace Configs
 {
     public class BasicTypes 
     {
-        public int Id;
-        public int NumberTest;
-        public string StringTest;
-        public bool BoolTest;
+        public int Id { get; set; }
+        public int NumberTest { get; set; }
+        public bool BoolTest { get; set; }
     }
 }

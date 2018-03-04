@@ -1,0 +1,12 @@
+[ 
+    { 
+        "Id": 1007,
+        "NumberTest": 243,
+        "BoolTest": false,
+        "OwnType": "fsteg"
+    },
+    { 
+        "Id": 1008,
+        "OwnType": "asert"
+    }
+]

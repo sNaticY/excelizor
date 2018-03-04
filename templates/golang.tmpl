@@ -2,7 +2,8 @@ package exports
 
 // {{.Name}} exported from {{.FileName}}.xlsx
 type {{.Name}} struct {
-    {{- with .Template -}}
+    {{golangInherit .ParentClass}}
+    {{- with .OwnTemplate -}}
     {{- range .Fields}}
 	{{.Name}} {{GetGolangTypeName .LongType}} `json:"{{.Name}}"`
     {{- end}}

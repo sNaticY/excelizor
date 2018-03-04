@@ -102,20 +102,42 @@ func handleData(dataType string, data string) (string, error) {
 func name2lower2Camel(name string) (string, string) {
 	dotIndex := strings.LastIndex(name, ".")
 	lower := name[:dotIndex]
+	return lower, name2Camel(lower)
+}
 
-	initial := strings.ToUpper(lower[0:1])
-	other := lower[1:]
+func name2Camel(v string) string {
+	if v == "" {
+		return v
+	}
+	initial := strings.ToUpper(v[0:1])
+	other := v[1:]
 	for strings.Index(other, "_") != -1 {
 		index := strings.Index(other, "_")
 		replace := strings.ToUpper(other[index+1 : index+2])
 		s := []string{other[:index], replace, other[index+2:]}
 		other = strings.Join(s, "")
 	}
-	return lower, initial + other
+	return initial + other
 }
 
 func upperInitialChar(str string) string {
 	initial := strings.ToUpper(str[0:1])
 	other := str[1:]
 	return initial + other
+}
+
+func indent(spaces int, v string) string {
+	pad := strings.Repeat(" ", spaces)
+	return pad + strings.Replace(v, "\n", "\n"+pad, -1)
+}
+
+func csharpInherit(v string) string {
+	if v == "" {
+		return v
+	}
+	return ": " + name2Camel(v)
+}
+
+func golangInherit(v string) string {
+	return name2Camel(v)
 }

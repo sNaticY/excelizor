@@ -1,16 +1,6 @@
 local MultiNestedTypes = {
     [3001] = {
         Id = 3001, 
-        DictTest3 = { 
-            SubDict1 = {
-                Item1 = 3111,
-                Item2 = 3112, 
-            }, 
-            SubDict2 = {
-                Item1 = 3121,
-                Item2 = 3122, 
-            }, 
-        }, 
         DictTest5 = { 
             Subdict1 = {
                 Item1 = "asd",
@@ -97,13 +87,7 @@ local MultiNestedTypes = {
         },
     },
     [3002] = {
-        Id = 3002, 
-        DictTest3 = { 
-            SubDict2 = {
-                Item1 = 3221,
-                Item2 = 3222, 
-            }, 
-        },
+        Id = 3002,
         ListTest3 = {
             [0] = {
                 [0] = "ListTest3[0][0]",

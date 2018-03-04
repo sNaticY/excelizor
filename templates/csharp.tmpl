@@ -2,11 +2,11 @@ using System.Collections.Generic;
 
 namespace Configs
 {
-    public class {{.Name}} 
+    public class {{.Name}} {{csharpInherit .ParentClass}}
     {
-        {{- with .Template -}}
+        {{- with .OwnTemplate -}}
         {{- range .Fields}}
-        public {{GetCSharpTypeName .LongType}} {{.Name}};
+        public {{GetCSharpTypeName .LongType}} {{.Name}} { get; set; }
         {{- end}}
         {{- end}}
     }

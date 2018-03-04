@@ -29,6 +29,7 @@ func (e *exporter) Init() {
 
 	initCsharpTypeNames()
 	initGolangTypeNames()
+
 }
 
 func (e *exporter) ExportLua(folder string, xl *xlsx) {
@@ -112,14 +113,11 @@ func genericFuncMap() map[string]interface{} {
 		"GetCSharpTypeName": parseCsharpType,
 		"GetGolangTypeName": parseGolangType,
 		"indent":            indent,
+		"csharpInherit":     csharpInherit,
+		"golangInherit":     golangInherit,
 	}
 
 	return genericMap
-}
-
-func indent(spaces int, v string) string {
-	pad := strings.Repeat(" ", spaces)
-	return pad + strings.Replace(v, "\n", "\n"+pad, -1)
 }
 
 func parseCsharpType(longType string) string {

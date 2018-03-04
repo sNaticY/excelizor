@@ -8,11 +8,13 @@ import (
 )
 
 type xlsx struct {
-	Name     string
-	FileName string
-	Template *xField
-	Data     []*xField
-	keymap   map[int]*xField
+	Name        string
+	FileName    string
+	Template    *xField
+	OwnTemplate *xField
+	Data        []*xField
+	keymap      map[int]*xField
+	ParentClass string
 }
 
 func (x *xlsx) Init(fileName string, name string) {
@@ -24,8 +26,10 @@ func (x *xlsx) Init(fileName string, name string) {
 
 func (x *xlsx) Parse(rows [][]string) {
 	x.Template = new(xField)
+	x.OwnTemplate = x.Template.Copy()
 	if ok, _ := x.Template.Init(x.Name, "struct", ""); ok {
 		x.Template.ParseSubFieldsDefs(rows[1], rows[2], rows[3])
+
 		for i := 4; i < len(rows); i++ {
 			field := x.Template.Copy()
 
@@ -53,9 +57,37 @@ func (x *xlsx) Parse(rows [][]string) {
 				i++
 			}
 		}
+
+		if x.ParentClass != "" {
+			x.OwnTemplate.Fields = x.OwnTemplate.Fields[:0]
+			parentClassName := x.ParentClass + ".xlsx"
+			if val, ok := loadedFiles[parentClassName]; ok {
+				parseExcel(parentClassName, val)
+			} else {
+				log.Fatalln("Cant find parent class excel name = " + parentClassName)
+			}
+			for index := 0; index < len(x.Template.Fields); index++ {
+				field := x.Template.Fields[index]
+				if !loadedFiles[parentClassName].xl.CheckExistField(field) {
+					x.OwnTemplate.Fields = append(x.OwnTemplate.Fields, field.Copy())
+				}
+			}
+
+		} else {
+			x.OwnTemplate = x.Template.Copy()
+		}
 	} else {
 		log.Fatalln("Parse", x.Name, "head field")
 	}
+}
+
+func (x *xlsx) CheckExistField(field *xField) bool {
+	for index := 0; index < len(x.Template.Fields); index++ {
+		if x.Template.Fields[index].Name == field.Name && x.Template.Fields[index].LongType == field.LongType {
+			return true
+		}
+	}
+	return false
 }
 
 func (x *xlsx) Print() {

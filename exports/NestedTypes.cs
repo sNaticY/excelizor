@@ -4,9 +4,8 @@ namespace Configs
 {
     public class NestedTypes 
     {
-        public int Id;
-        public Dictionary<string, float> DictTest1;
-        public Dictionary<string, int> DictTest2;
-        public List<float> ListTest2;
+        public int Id { get; set; }
+        public Dictionary<string, float> DictTest1 { get; set; }
+        public List<float> ListTest2 { get; set; }
     }
 }

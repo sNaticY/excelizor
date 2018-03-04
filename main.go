@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"strings"
 
 	"github.com/360EntSecGroup-Skylar/excelize"
 )
@@ -64,18 +65,26 @@ func main() {
 	}
 
 	for key, value := range loadedFiles {
-		output := "Parse and export file [ " + key + " ] "
-		fmt.Print(output)
-		for i := 0; i < 60-len(output); i++ {
-			fmt.Print(".")
-		}
-		value.xl = parseFile(key, value.file)
-		exportFile(value.xl)
-		fmt.Print(" Success!\n")
+		parseExcel(key, value)
 	}
 
 	//x.Print()
 	return
+}
+
+func parseExcel(name string, excel *fileXlsx) {
+	output := "\nParse and export file [ " + name + " ] "
+	fmt.Print(output)
+
+	for i := 0; i < 60-len(output); i++ {
+		fmt.Print(".")
+	}
+
+	if excel.xl == nil {
+		excel.xl = parseFile(name, excel.file)
+		exportFile(excel.xl)
+	}
+	fmt.Print(" Success!")
 }
 
 func loadFile(path string, f os.FileInfo, err error) error {
@@ -99,12 +108,19 @@ func parseFile(fileName string, file *excelize.File) *xlsx {
 	var data [][]string
 	sheetName := file.GetSheetName(1)
 
+	x := new(xlsx)
 	if sheetName == "Vertical" {
 		data = convertToVertical(file.GetRows(sheetName))
 	} else {
 		data = file.GetRows(sheetName)
 	}
-	x := new(xlsx)
+
+	x.ParentClass = ""
+	if strings.Contains(sheetName, "|") {
+		i := strings.LastIndex(sheetName, "|")
+		j := strings.LastIndex(sheetName, ".")
+		x.ParentClass = sheetName[i+1 : j]
+	}
 
 	lower, camel := name2lower2Camel(fileName)
 	x.Init(lower, camel)

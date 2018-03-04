@@ -4,18 +4,17 @@ namespace Configs
 {
     public class VerticalTypes 
     {
-        public int Id;
-        public int NumberTest;
-        public string StringTest;
-        public float FloatTest;
-        public bool BoolTest1;
-        public bool BoolTest3;
-        public bool BoolTest4;
-        public bool BoolTest5;
-        public bool BoolTest6;
-        public bool BoolTest7;
-        public bool BoolTest8;
-        public bool BoolTest9;
-        public bool BoolTest10;
+        public int Id { get; set; }
+        public int NumberTest { get; set; }
+        public string StringTest { get; set; }
+        public float FloatTest { get; set; }
+        public bool BoolTest3 { get; set; }
+        public bool BoolTest4 { get; set; }
+        public bool BoolTest5 { get; set; }
+        public bool BoolTest6 { get; set; }
+        public bool BoolTest7 { get; set; }
+        public bool BoolTest8 { get; set; }
+        public bool BoolTest9 { get; set; }
+        public bool BoolTest10 { get; set; }
     }
 }
